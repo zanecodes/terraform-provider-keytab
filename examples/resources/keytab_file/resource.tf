@@ -1,5 +1,6 @@
 resource "keytab_file" "example" {
   entry {
+    principal = "example"
   }
 }
 

@@ -15,6 +15,7 @@ File resource
 ```terraform
 resource "keytab_file" "example" {
   entry {
+    principal = "example"
   }
 }
 
@@ -38,5 +39,9 @@ output "keytab" {
 
 <a id="nestedblock--entry"></a>
 ### Nested Schema for `entry`
+
+Required:
+
+- `principal` (String) The name of the Kerberos principal to which the key belongs, not including the realm.
 
 

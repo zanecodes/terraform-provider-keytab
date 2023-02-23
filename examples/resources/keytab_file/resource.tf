@@ -1,3 +1,7 @@
 resource "keytab_file" "example" {
-  configurable_attribute = "some-value"
+}
+
+output "keytab" {
+  sensitive = true
+  value     = keytab_file.example.content_base64
 }

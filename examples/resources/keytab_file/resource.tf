@@ -1,3 +1,3 @@
-resource "keytab_example" "example" {
+resource "keytab_file" "example" {
   configurable_attribute = "some-value"
 }

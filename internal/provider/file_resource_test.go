@@ -7,22 +7,22 @@ import (
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 )
 
-func TestAccExampleResource(t *testing.T) {
+func TestAccFileResource(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },
 		ProtoV6ProviderFactories: testAccProtoV6ProviderFactories,
 		Steps: []resource.TestStep{
 			// Create and Read testing
 			{
-				Config: testAccExampleResourceConfig("one"),
+				Config: testAccFileResourceConfig("one"),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("keytab_example.test", "configurable_attribute", "one"),
-					resource.TestCheckResourceAttr("keytab_example.test", "id", "example-id"),
+					resource.TestCheckResourceAttr("keytab_file.test", "configurable_attribute", "one"),
+					resource.TestCheckResourceAttr("keytab_file.test", "id", "example-id"),
 				),
 			},
 			// ImportState testing
 			{
-				ResourceName:      "keytab_example.test",
+				ResourceName:      "keytab_file.test",
 				ImportState:       true,
 				ImportStateVerify: true,
 				// This is not normally necessary, but is here because this
@@ -33,9 +33,9 @@ func TestAccExampleResource(t *testing.T) {
 			},
 			// Update and Read testing
 			{
-				Config: testAccExampleResourceConfig("two"),
+				Config: testAccFileResourceConfig("two"),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("keytab_example.test", "configurable_attribute", "two"),
+					resource.TestCheckResourceAttr("keytab_file.test", "configurable_attribute", "two"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -43,9 +43,9 @@ func TestAccExampleResource(t *testing.T) {
 	})
 }
 
-func testAccExampleResourceConfig(configurableAttribute string) string {
+func testAccFileResourceConfig(configurableAttribute string) string {
 	return fmt.Sprintf(`
-resource "keytab_example" "test" {
+resource "keytab_file" "test" {
   configurable_attribute = %[1]q
 }
 `, configurableAttribute)

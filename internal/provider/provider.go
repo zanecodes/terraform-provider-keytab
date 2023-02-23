@@ -35,7 +35,7 @@ func (p *KeytabProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 func (p *KeytabProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		NewExampleResource,
+		NewFileResource,
 	}
 }
 

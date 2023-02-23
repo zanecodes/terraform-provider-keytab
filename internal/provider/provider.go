@@ -2,13 +2,10 @@ package provider
 
 import (
 	"context"
-	"net/http"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
-	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Ensure KeytabProvider satisfies various provider interfaces.
@@ -23,9 +20,7 @@ type KeytabProvider struct {
 }
 
 // KeytabProviderModel describes the provider data model.
-type KeytabProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
-}
+type KeytabProviderModel struct{}
 
 func (p *KeytabProvider) Metadata(ctx context.Context, req provider.MetadataRequest, resp *provider.MetadataResponse) {
 	resp.TypeName = "keytab"
@@ -33,32 +28,9 @@ func (p *KeytabProvider) Metadata(ctx context.Context, req provider.MetadataRequ
 }
 
 func (p *KeytabProvider) Schema(ctx context.Context, req provider.SchemaRequest, resp *provider.SchemaResponse) {
-	resp.Schema = schema.Schema{
-		Attributes: map[string]schema.Attribute{
-			"endpoint": schema.StringAttribute{
-				MarkdownDescription: "Example provider attribute",
-				Optional:            true,
-			},
-		},
-	}
 }
 
 func (p *KeytabProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
-	var data KeytabProviderModel
-
-	resp.Diagnostics.Append(req.Config.Get(ctx, &data)...)
-
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	// Configuration values are now available.
-	// if data.Endpoint.IsNull() { /* ... */ }
-
-	// Example client configuration for data sources and resources
-	client := http.DefaultClient
-	resp.DataSourceData = client
-	resp.ResourceData = client
 }
 
 func (p *KeytabProvider) Resources(ctx context.Context) []func() resource.Resource {
@@ -68,7 +40,7 @@ func (p *KeytabProvider) Resources(ctx context.Context) []func() resource.Resour
 }
 
 func (p *KeytabProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{}
+	return nil
 }
 
 func New(version string) func() provider.Provider {

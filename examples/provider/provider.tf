@@ -1,3 +1,1 @@
-provider "keytab" {
-  # example configuration here
-}
+provider "keytab" {}

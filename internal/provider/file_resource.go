@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/jcmturner/gokrb5/v8/keytab"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -65,7 +66,14 @@ func (r *FileResource) Create(ctx context.Context, req resource.CreateRequest, r
 		return
 	}
 
-	bytes := make([]byte, 0)
+	keytab := keytab.New()
+
+	bytes, err := keytab.Marshal()
+
+	if err != nil {
+		resp.Diagnostics.AddError("Unable to generate keytab", err.Error())
+		return
+	}
 
 	data.ContentBase64 = types.StringValue(base64.StdEncoding.EncodeToString(bytes))
 

@@ -1,3 +1,3 @@
-provider "scaffolding" {
+provider "keytab" {
   # example configuration here
 }

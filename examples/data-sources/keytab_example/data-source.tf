@@ -1,3 +1,3 @@
-data "scaffolding_example" "example" {
+data "keytab_example" "example" {
   configurable_attribute = "some-value"
 }

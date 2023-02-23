@@ -1,4 +1,4 @@
-module github.com/hashicorp/terraform-provider-scaffolding-framework
+module github.com/zanecodes/terraform-provider-keytab
 
 go 1.18
 

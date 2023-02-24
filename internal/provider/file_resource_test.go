@@ -16,7 +16,7 @@ func TestAccFileResource(t *testing.T) {
 			{
 				Config: testAccFileResourceConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("keytab_file.test", "content_base64", "BQIAAAA5AAEACXJlYWxtLmNvbQAJcHJpbmNpcGFsAAAAAQAAAAAAABcAEDHWz+DRaukxtzxZ1+DAicAAAAAA"),
+					resource.TestCheckResourceAttr("keytab_file.test", "content_base64", "BQIAAAA5AAEACXJlYWxtLmNvbQAJcHJpbmNpcGFsAAAAAQAAAAAAABcAEOiGt+rdTTQvnyr6jIoG6QEAAAAA"),
 					resource.TestCheckResourceAttrSet("keytab_file.test", "id"),
 				),
 			},
@@ -24,7 +24,7 @@ func TestAccFileResource(t *testing.T) {
 			{
 				Config: testAccFileResourceConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("keytab_file.test", "content_base64", "BQIAAAA5AAEACXJlYWxtLmNvbQAJcHJpbmNpcGFsAAAAAQAAAAAAABcAEDHWz+DRaukxtzxZ1+DAicAAAAAA"),
+					resource.TestCheckResourceAttr("keytab_file.test", "content_base64", "BQIAAAA5AAEACXJlYWxtLmNvbQAJcHJpbmNpcGFsAAAAAQAAAAAAABcAEOiGt+rdTTQvnyr6jIoG6QEAAAAA"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -38,6 +38,7 @@ resource "keytab_file" "test" {
   entry {
     principal = "principal"
     realm = "realm.com"
+    key = "key"
   }
 }
 `)

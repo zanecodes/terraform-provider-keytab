@@ -5,10 +5,13 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+	"math"
 	"time"
 
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/jcmturner/gokrb5/v8/iana/etypeID"
@@ -69,6 +72,9 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 						"key_version": schema.Int64Attribute{
 							MarkdownDescription: "The version number of the key.",
 							Required:            true,
+							Validators: []validator.Int64{
+								int64validator.Between(0, math.MaxUint8),
+							},
 						},
 					},
 				},

@@ -37,10 +37,11 @@ type FileResourceModel struct {
 }
 
 type FileEntryModel struct {
-	Principal  types.String `tfsdk:"principal"`
-	Realm      types.String `tfsdk:"realm"`
-	Key        types.String `tfsdk:"key"`
-	KeyVersion types.Int64  `tfsdk:"key_version"`
+	Principal      types.String `tfsdk:"principal"`
+	Realm          types.String `tfsdk:"realm"`
+	Key            types.String `tfsdk:"key"`
+	KeyVersion     types.Int64  `tfsdk:"key_version"`
+	EncryptionType types.String `tfsdk:"encryption_type"`
 }
 
 func (r *FileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -75,6 +76,10 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 							Validators: []validator.Int64{
 								int64validator.Between(0, math.MaxUint8),
 							},
+						},
+						"encryption_type": schema.StringAttribute{
+							MarkdownDescription: "The encryption type to use for the key. Must be one of: `aes128-cts-hmac-sha1-96`/`aes128-cts`/`aes128-sha1`, `aes256-cts-hmac-sha1-96`/`aes256-cts`/`aes256-sha1`, `aes128-cts-hmac-sha256-128`/`aes128-sha2`, `aes256-cts-hmac-sha384-192`/`aes256-sha2`, `des3-cbc-sha1-kd`, or `arcfour-hmac`/`rc4-hmac`/`arcfour-hmac-md5`.",
+							Required:            true,
 						},
 					},
 				},
@@ -111,7 +116,7 @@ func (r *FileResource) Create(ctx context.Context, req resource.CreateRequest, r
 	keytab := keytab.New()
 
 	for _, entry := range data.Entries {
-		if err := keytab.AddEntry(entry.Principal.ValueString(), entry.Realm.ValueString(), entry.Key.ValueString(), time.UnixMilli(0), uint8(entry.KeyVersion.ValueInt64()), etypeID.RC4_HMAC); err != nil {
+		if err := keytab.AddEntry(entry.Principal.ValueString(), entry.Realm.ValueString(), entry.Key.ValueString(), time.UnixMilli(0), uint8(entry.KeyVersion.ValueInt64()), etypeID.EtypeSupported(entry.EncryptionType.ValueString())); err != nil {
 			resp.Diagnostics.AddError("Invalid keytab entry", err.Error())
 			return
 		}

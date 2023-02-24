@@ -40,6 +40,7 @@ resource "keytab_file" "test" {
     realm = "realm.com"
     key = "key"
     key_version = 0
+    encryption_type = "rc4-hmac"
   }
 }
 `)

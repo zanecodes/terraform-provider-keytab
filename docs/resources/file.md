@@ -15,10 +15,11 @@ File resource
 ```terraform
 resource "keytab_file" "example" {
   entry {
-    principal   = "example"
-    realm       = "example.com"
-    key         = "example key"
-    key_version = 0
+    principal       = "example"
+    realm           = "example.com"
+    key             = "example key"
+    key_version     = 0
+    encryption_type = "rc4-hmac"
   }
 }
 
@@ -45,6 +46,7 @@ output "keytab" {
 
 Required:
 
+- `encryption_type` (String) The encryption type to use for the key. Must be one of: `aes128-cts-hmac-sha1-96`/`aes128-cts`/`aes128-sha1`, `aes256-cts-hmac-sha1-96`/`aes256-cts`/`aes256-sha1`, `aes128-cts-hmac-sha256-128`/`aes128-sha2`, `aes256-cts-hmac-sha384-192`/`aes256-sha2`, `des3-cbc-sha1-kd`, or `arcfour-hmac`/`rc4-hmac`/`arcfour-hmac-md5`.
 - `key` (String, Sensitive) The key belonging to the Kerberos principal.
 - `key_version` (Number) The version number of the key.
 - `principal` (String) The name of the Kerberos principal to which the key belongs, not including the realm.

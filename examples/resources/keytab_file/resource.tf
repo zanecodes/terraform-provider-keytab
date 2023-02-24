@@ -1,9 +1,10 @@
 resource "keytab_file" "example" {
   entry {
-    principal   = "example"
-    realm       = "example.com"
-    key         = "example key"
-    key_version = 0
+    principal       = "example"
+    realm           = "example.com"
+    key             = "example key"
+    key_version     = 0
+    encryption_type = "rc4-hmac"
   }
 }
 

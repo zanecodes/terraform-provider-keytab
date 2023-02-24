@@ -3,12 +3,12 @@
 page_title: "keytab_file Resource - terraform-provider-keytab"
 subcategory: ""
 description: |-
-  File resource
+  Manages a Kerberos keytab file stored in the Terraform state. The generated keytab contents can be read from the content_base64 attribute.
 ---
 
 # keytab_file (Resource)
 
-File resource
+Manages a Kerberos keytab file stored in the Terraform state. The generated keytab contents can be read from the `content_base64` attribute.
 
 ## Example Usage
 

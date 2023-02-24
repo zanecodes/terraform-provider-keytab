@@ -65,7 +65,7 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
-		MarkdownDescription: "File resource",
+		MarkdownDescription: "Manages a Kerberos keytab file stored in the Terraform state. The generated keytab contents can be read from the `content_base64` attribute.",
 
 		Blocks: map[string]schema.Block{
 			"entry": schema.ListNestedBlock{

@@ -15,9 +15,10 @@ File resource
 ```terraform
 resource "keytab_file" "example" {
   entry {
-    principal = "example"
-    realm     = "example.com"
-    key       = "example key"
+    principal   = "example"
+    realm       = "example.com"
+    key         = "example key"
+    key_version = 0
   }
 }
 
@@ -45,6 +46,7 @@ output "keytab" {
 Required:
 
 - `key` (String, Sensitive) The key belonging to the Kerberos principal.
+- `key_version` (Number) The version number of the key.
 - `principal` (String) The name of the Kerberos principal to which the key belongs, not including the realm.
 - `realm` (String) The realm to which the Kerberos principal belongs.
 

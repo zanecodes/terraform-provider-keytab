@@ -39,6 +39,7 @@ resource "keytab_file" "test" {
     principal = "principal"
     realm = "realm.com"
     key = "key"
+    key_version = 0
   }
 }
 `)

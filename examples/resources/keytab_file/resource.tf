@@ -1,8 +1,9 @@
 resource "keytab_file" "example" {
   entry {
-    principal = "example"
-    realm     = "example.com"
-    key       = "example key"
+    principal   = "example"
+    realm       = "example.com"
+    key         = "example key"
+    key_version = 0
   }
 }
 

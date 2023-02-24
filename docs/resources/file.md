@@ -16,6 +16,7 @@ File resource
 resource "keytab_file" "example" {
   entry {
     principal = "example"
+    realm     = "example.com"
   }
 }
 
@@ -43,5 +44,6 @@ output "keytab" {
 Required:
 
 - `principal` (String) The name of the Kerberos principal to which the key belongs, not including the realm.
+- `realm` (String) The realm to which the Kerberos principal belongs.
 
 

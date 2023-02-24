@@ -35,6 +35,7 @@ type FileResourceModel struct {
 
 type FileEntryModel struct {
 	Principal types.String `tfsdk:"principal"`
+	Realm     types.String `tfsdk:"realm"`
 }
 
 func (r *FileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -52,6 +53,10 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 					Attributes: map[string]schema.Attribute{
 						"principal": schema.StringAttribute{
 							MarkdownDescription: "The name of the Kerberos principal to which the key belongs, not including the realm.",
+							Required:            true,
+						},
+						"realm": schema.StringAttribute{
+							MarkdownDescription: "The realm to which the Kerberos principal belongs.",
 							Required:            true,
 						},
 					},
@@ -89,7 +94,7 @@ func (r *FileResource) Create(ctx context.Context, req resource.CreateRequest, r
 	keytab := keytab.New()
 
 	for _, entry := range data.Entries {
-		if err := keytab.AddEntry(entry.Principal.ValueString(), "", "", time.UnixMilli(0), 0, etypeID.RC4_HMAC); err != nil {
+		if err := keytab.AddEntry(entry.Principal.ValueString(), entry.Realm.ValueString(), "", time.UnixMilli(0), 0, etypeID.RC4_HMAC); err != nil {
 			resp.Diagnostics.AddError("Invalid keytab entry", err.Error())
 			return
 		}

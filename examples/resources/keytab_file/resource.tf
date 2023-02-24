@@ -5,7 +5,6 @@ resource "keytab_file" "example" {
     key             = "example key"
     key_version     = 0
     encryption_type = "rc4-hmac"
-    timestamp       = "1970-01-01T00:00:00Z"
   }
 }
 

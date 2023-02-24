@@ -97,8 +97,9 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 							},
 						},
 						"timestamp": schema.StringAttribute{
-							MarkdownDescription: "The creation timestamp for the Keytab entry in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.",
-							Required:            true,
+							MarkdownDescription: "The creation timestamp for the Keytab entry in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format. Defaults to the current time, but may be set to a specific time for better reproducibility.",
+							Optional:            true,
+							Computed:            true,
 							Validators: []validator.String{
 								timevalidator.IsRFC3339Time(),
 							},
@@ -128,6 +129,8 @@ func (r *FileResource) Configure(ctx context.Context, req resource.ConfigureRequ
 func (r *FileResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var data *FileResourceModel
 
+	now := time.Now()
+
 	// Read Terraform plan data into the model
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 
@@ -137,12 +140,20 @@ func (r *FileResource) Create(ctx context.Context, req resource.CreateRequest, r
 
 	keytab := keytab.New()
 
-	for _, entry := range data.Entries {
-		timestamp, err := time.Parse(time.RFC3339, entry.Timestamp.ValueString())
+	for i, entry := range data.Entries {
+		var timestamp time.Time
 
-		if err != nil {
-			resp.Diagnostics.AddError("Invalid timestamp", err.Error())
-			return
+		if entry.Timestamp.IsUnknown() {
+			timestamp = now
+			data.Entries[i].Timestamp = types.StringValue(timestamp.Format(time.RFC3339))
+		} else {
+			var err error
+			timestamp, err = time.Parse(time.RFC3339, entry.Timestamp.ValueString())
+
+			if err != nil {
+				resp.Diagnostics.AddError("Invalid timestamp", err.Error())
+				return
+			}
 		}
 
 		if err := keytab.AddEntry(entry.Principal.ValueString(), entry.Realm.ValueString(), entry.Key.ValueString(), timestamp, uint8(entry.KeyVersion.ValueInt64()), etypeID.EtypeSupported(entry.EncryptionType.ValueString())); err != nil {

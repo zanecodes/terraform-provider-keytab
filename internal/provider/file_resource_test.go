@@ -13,10 +13,6 @@ import (
 
 func TestAccFileResource(t *testing.T) {
 	first_keytab := keytab.New()
-	if err := first_keytab.AddEntry("principal", "realm.com", "key", time.Now().Truncate(time.Second), 0, etypeID.RC4_HMAC); err != nil {
-		t.Fatal(err.Error())
-		return
-	}
 
 	second_keytab := keytab.New()
 	if err := second_keytab.AddEntry("principal", "realm.com", "key", time.Unix(0, 0), 0, etypeID.RC4_HMAC); err != nil {
@@ -51,6 +47,12 @@ resource "keytab_file" "test" {
   }
 }
 `,
+				PreConfig: func() {
+					if err := first_keytab.AddEntry("principal", "realm.com", "key", time.Now().Truncate(time.Second), 0, etypeID.RC4_HMAC); err != nil {
+						t.Fatal(err.Error())
+						return
+					}
+				},
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet("keytab_file.test", "id"),
 					resource.TestCheckResourceAttrWith("keytab_file.test", "content_base64", testAccCheckKeytabContent(t, first_keytab)),

@@ -1,4 +1,6 @@
 resource "keytab_file" "example" {
+  entry {
+  }
 }
 
 output "keytab" {

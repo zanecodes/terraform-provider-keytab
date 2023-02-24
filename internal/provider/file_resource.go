@@ -5,11 +5,13 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/jcmturner/gokrb5/v8/iana/etypeID"
 	"github.com/jcmturner/gokrb5/v8/keytab"
 )
 
@@ -26,8 +28,12 @@ type FileResource struct {
 
 // FileResourceModel describes the resource data model.
 type FileResourceModel struct {
-	ContentBase64 types.String `tfsdk:"content_base64"`
-	Id            types.String `tfsdk:"id"`
+	Entries       []FileEntryModel `tfsdk:"entry"`
+	ContentBase64 types.String     `tfsdk:"content_base64"`
+	Id            types.String     `tfsdk:"id"`
+}
+
+type FileEntryModel struct {
 }
 
 func (r *FileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -38,6 +44,10 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "File resource",
+
+		Blocks: map[string]schema.Block{
+			"entry": schema.ListNestedBlock{},
+		},
 
 		Attributes: map[string]schema.Attribute{
 			"content_base64": schema.StringAttribute{
@@ -67,6 +77,13 @@ func (r *FileResource) Create(ctx context.Context, req resource.CreateRequest, r
 	}
 
 	keytab := keytab.New()
+
+	for range data.Entries {
+		if err := keytab.AddEntry("", "", "", time.UnixMilli(0), 0, etypeID.RC4_HMAC); err != nil {
+			resp.Diagnostics.AddError("Invalid keytab entry", err.Error())
+			return
+		}
+	}
 
 	bytes, err := keytab.Marshal()
 

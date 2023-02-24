@@ -16,7 +16,7 @@ func TestAccFileResource(t *testing.T) {
 			{
 				Config: testAccFileResourceConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("keytab_file.test", "content_base64", "BQI="),
+					resource.TestCheckResourceAttr("keytab_file.test", "content_base64", "BQIAAAAnAAEAAAAAAAAAAQAAAAAAABcAEDHWz+DRaukxtzxZ1+DAicAAAAAA"),
 					resource.TestCheckResourceAttrSet("keytab_file.test", "id"),
 				),
 			},
@@ -24,7 +24,7 @@ func TestAccFileResource(t *testing.T) {
 			{
 				Config: testAccFileResourceConfig(),
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("keytab_file.test", "content_base64", "BQI="),
+					resource.TestCheckResourceAttr("keytab_file.test", "content_base64", "BQIAAAAnAAEAAAAAAAAAAQAAAAAAABcAEDHWz+DRaukxtzxZ1+DAicAAAAAA"),
 				),
 			},
 			// Delete testing automatically occurs in TestCase
@@ -35,6 +35,8 @@ func TestAccFileResource(t *testing.T) {
 func testAccFileResourceConfig() string {
 	return fmt.Sprintf(`
 resource "keytab_file" "test" {
+  entry {
+  }
 }
 `)
 }

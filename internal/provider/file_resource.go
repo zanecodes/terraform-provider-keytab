@@ -17,6 +17,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 	"github.com/jcmturner/gokrb5/v8/iana/etypeID"
 	"github.com/jcmturner/gokrb5/v8/keytab"
+
+	"github.com/zanecodes/terraform-provider-keytab/internal/validators/timevalidator"
 )
 
 // Ensure provider defined types fully satisfy framework interfaces.
@@ -97,6 +99,9 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 						"timestamp": schema.StringAttribute{
 							MarkdownDescription: "The creation timestamp for the Keytab entry in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.",
 							Required:            true,
+							Validators: []validator.String{
+								timevalidator.IsRFC3339Time(),
+							},
 						},
 					},
 				},

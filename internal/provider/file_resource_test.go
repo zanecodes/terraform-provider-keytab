@@ -13,14 +13,26 @@ import (
 
 func TestAccFileResource(t *testing.T) {
 	first_keytab := keytab.New()
-	first_keytab.AddEntry("principal", "realm.com", "key", time.Now().Truncate(time.Second), 0, etypeID.RC4_HMAC)
+	if err := first_keytab.AddEntry("principal", "realm.com", "key", time.Now().Truncate(time.Second), 0, etypeID.RC4_HMAC); err != nil {
+		t.Fatal(err.Error())
+		return
+	}
 
 	second_keytab := keytab.New()
-	second_keytab.AddEntry("principal", "realm.com", "key", time.Unix(0, 0), 0, etypeID.RC4_HMAC)
+	if err := second_keytab.AddEntry("principal", "realm.com", "key", time.Unix(0, 0), 0, etypeID.RC4_HMAC); err != nil {
+		t.Fatal(err.Error())
+		return
+	}
 
 	third_keytab := keytab.New()
-	third_keytab.AddEntry("principal", "realm.com", "key", time.Unix(0, 0), 0, etypeID.RC4_HMAC)
-	third_keytab.AddEntry("principal two", "realm-two.com", "key two", time.Unix(1, 0), 1, etypeID.AES128_CTS_HMAC_SHA1_96)
+	if err := third_keytab.AddEntry("principal", "realm.com", "key", time.Unix(0, 0), 0, etypeID.RC4_HMAC); err != nil {
+		t.Fatal(err.Error())
+		return
+	}
+	if err := third_keytab.AddEntry("principal two", "realm-two.com", "key two", time.Unix(1, 0), 1, etypeID.AES128_CTS_HMAC_SHA1_96); err != nil {
+		t.Fatal(err.Error())
+		return
+	}
 
 	resource.Test(t, resource.TestCase{
 		PreCheck:                 func() { testAccPreCheck(t) },

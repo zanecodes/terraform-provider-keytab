@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -49,6 +50,14 @@ func (r *FileResource) Metadata(ctx context.Context, req resource.MetadataReques
 }
 
 func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
+	supported_etypes := make([]string, 0)
+
+	for k := range etypeID.ETypesByName {
+		if etypeID.EtypeSupported(k) != 0 {
+			supported_etypes = append(supported_etypes, k)
+		}
+	}
+
 	resp.Schema = schema.Schema{
 		// This description is used by the documentation generator and the language server.
 		MarkdownDescription: "File resource",
@@ -80,6 +89,9 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 						"encryption_type": schema.StringAttribute{
 							MarkdownDescription: "The encryption type to use for the key. Must be one of: `aes128-cts-hmac-sha1-96`/`aes128-cts`/`aes128-sha1`, `aes256-cts-hmac-sha1-96`/`aes256-cts`/`aes256-sha1`, `aes128-cts-hmac-sha256-128`/`aes128-sha2`, `aes256-cts-hmac-sha384-192`/`aes256-sha2`, `des3-cbc-sha1-kd`, or `arcfour-hmac`/`rc4-hmac`/`arcfour-hmac-md5`.",
 							Required:            true,
+							Validators: []validator.String{
+								stringvalidator.OneOf(supported_etypes...),
+							},
 						},
 					},
 				},

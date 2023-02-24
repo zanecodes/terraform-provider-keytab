@@ -130,6 +130,25 @@ func testAccCheckKeytabContent(_ *testing.T, expected *keytab.Keytab) resource.C
 				return err
 			}
 
+			// Allow for up to 5 seconds of slop in timestamps during testing
+			for i, entry := range expected.Entries {
+				if actual.Entries[i].Timestamp.Sub(entry.Timestamp).Seconds() < 5.0 {
+					actual.Entries[i].Timestamp = entry.Timestamp
+				}
+			}
+
+			actual_bytes, err = actual.Marshal()
+
+			if err != nil {
+				return err
+			}
+
+			actual_value = base64.StdEncoding.EncodeToString(actual_bytes)
+
+			if actual_value == expected_value {
+				return nil
+			}
+
 			expected_json, err := expected.JSON()
 
 			if err != nil {

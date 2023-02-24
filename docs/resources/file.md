@@ -20,6 +20,7 @@ resource "keytab_file" "example" {
     key             = "example key"
     key_version     = 0
     encryption_type = "rc4-hmac"
+    timestamp       = "1970-01-01T00:00:00Z"
   }
 }
 
@@ -51,5 +52,6 @@ Required:
 - `key_version` (Number) The version number of the key.
 - `principal` (String) The name of the Kerberos principal to which the key belongs, not including the realm.
 - `realm` (String) The realm to which the Kerberos principal belongs.
+- `timestamp` (String) The creation timestamp for the Keytab entry in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.
 
 

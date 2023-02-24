@@ -43,6 +43,7 @@ type FileEntryModel struct {
 	Key            types.String `tfsdk:"key"`
 	KeyVersion     types.Int64  `tfsdk:"key_version"`
 	EncryptionType types.String `tfsdk:"encryption_type"`
+	Timestamp      types.String `tfsdk:"timestamp"`
 }
 
 func (r *FileResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -93,6 +94,10 @@ func (r *FileResource) Schema(ctx context.Context, req resource.SchemaRequest, r
 								stringvalidator.OneOf(supported_etypes...),
 							},
 						},
+						"timestamp": schema.StringAttribute{
+							MarkdownDescription: "The creation timestamp for the Keytab entry in [RFC3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.8) format.",
+							Required:            true,
+						},
 					},
 				},
 			},
@@ -128,7 +133,14 @@ func (r *FileResource) Create(ctx context.Context, req resource.CreateRequest, r
 	keytab := keytab.New()
 
 	for _, entry := range data.Entries {
-		if err := keytab.AddEntry(entry.Principal.ValueString(), entry.Realm.ValueString(), entry.Key.ValueString(), time.UnixMilli(0), uint8(entry.KeyVersion.ValueInt64()), etypeID.EtypeSupported(entry.EncryptionType.ValueString())); err != nil {
+		timestamp, err := time.Parse(time.RFC3339, entry.Timestamp.ValueString())
+
+		if err != nil {
+			resp.Diagnostics.AddError("Invalid timestamp", err.Error())
+			return
+		}
+
+		if err := keytab.AddEntry(entry.Principal.ValueString(), entry.Realm.ValueString(), entry.Key.ValueString(), timestamp, uint8(entry.KeyVersion.ValueInt64()), etypeID.EtypeSupported(entry.EncryptionType.ValueString())); err != nil {
 			resp.Diagnostics.AddError("Invalid keytab entry", err.Error())
 			return
 		}
